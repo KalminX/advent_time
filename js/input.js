@@ -1,6 +1,6 @@
 /**
- * INPUT HANDLING - SESSION 2
- * Keyboard listeners with jump buffering, coyote time, and variable jump height.
+ * INPUT HANDLING
+ * Keyboard & pointer listeners with jump buffering and variable jump height.
  */
 
 const keys = {
@@ -10,6 +10,7 @@ const keys = {
   restart: false
 };
 
+// Jump feel: Coyote time and jump buffering
 let coyoteTimer = 0;
 let jumpBufferTimer = 0;
 
@@ -39,12 +40,23 @@ window.addEventListener('keyup', (e) => {
   }
   if (e.code === 'Space') {
     keys.jump = false;
-    // Variable jump height: releasing early cuts upward velocity
+    // Allow variable jump height by cutting upward velocity on early release
     if (typeof player !== 'undefined' && player.vy < -2.0) {
       player.vy = -2.0;
     }
   }
   if (e.code === 'KeyR') {
     keys.restart = false;
+  }
+});
+
+// Click / tap support to start or restart
+window.addEventListener('pointerdown', () => {
+  if (typeof gameState !== 'undefined') {
+    if (gameState === STATE_TITLE) {
+      gameState = STATE_PLAYING;
+    } else if (gameState === STATE_WON) {
+      resetGame();
+    }
   }
 });

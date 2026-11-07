@@ -1,16 +1,16 @@
-# 🎮 Neon Mono Platformer — Branch `02-session-2`
+# 🎮 Neon Mono Platformer — Branch `03-session-3`
 
-This branch represents the complete, working code at the end of **Session 2: Defying Gravity & Jumping on Platforms**.
+This branch represents the complete, fully polished game at the end of **Session 3: Hazards, Polish & Shipping with Gemini**.
 
 ## What is in this branch:
-- **Euler Gravity & Jump Arc**: Realistic physics acceleration with terminal velocity clamping.
-- **AABB Platform Collision Detection (`js/level.js`)**: Solid ground collision, horizontal wall blocks, and platform landing.
-- **Gemini Obstacle Course**: 15+ platform stepping stones across a 4-screen level progression.
-- **Game Feel Juice**:
-  - **Coyote Time (6 frames)**: Jump grace period after running off ledges.
-  - **Jump Buffering (6 frames)**: Pre-registers jump input before touchdown.
-  - **Variable Jump Height**: Releasing spacebar cuts upward velocity for precise jump control.
-- **Walk Cycle & Jump Animation**: Multi-frame animated sprite states with horizontal direction flipping.
+- **1280px Dynamic Scrolling Camera**: Smooth camera lerp that tracks the player across a 4-screen world.
+- **Spike Hazards & Death Flash**: Spike pits, contact damage, screen-space color inversion glitch, and respawn logic.
+- **Finite State Machine**:
+  - `STATE_TITLE`: Retro title screen with blinking "PRESS SPACE TO START" prompt.
+  - `STATE_PLAYING`: Full platforming gameplay loop with corner distance progress meter.
+  - `STATE_WON`: Victory gate banner ("MISSION COMPLETE! PRESS R TO PLAY AGAIN").
+- **Zero-Dependency 8-Bit Web Audio Synthesizer**: Native square and sawtooth wave sound effects for jump chirps, death buzzers, and victory arpeggios.
+- **Enemies & Obstacles**: Patrolling terrestrial Strider and aerial hovering Cyclops Drone.
 
 ## How to run:
-Open `index.html` in your browser. Use `A`/`D` to run, `Space` to jump, and try hopping between platforms!
+Simply open `index.html` in your browser! Press `Space` to begin, run and jump to the golden gate, and enjoy the 8-bit sound effects.
