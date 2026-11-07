@@ -14,3 +14,22 @@ This branch represents the complete, working code at the end of **Session 2: Def
 
 ## How to run:
 Open `index.html` in your browser. Use `A`/`D` to run, `Space` to jump, and try hopping between platforms!
+
+---
+
+## 🔄 How to Switch Between Branches & Acts
+
+| Stage | Focus / What's Playable | Switch Command |
+|---|---|---|
+| **`00-starter`** | Minimal canvas boilerplate (`320x180`), CRT styling, and 15-line loop with green test box | `git checkout 00-starter` |
+| **`01-session-1`** | Keyboard input (`A`/`D`/Arrows) and Gemini-generated 10x13 ASCII character sprite | `git checkout 01-session-1` |
+| **`02-session-2`** (current) | Euler gravity, spacebar jump, AABB platform collisions, coyote time & jump buffering | `git checkout 02-session-2` |
+| **`03-session-3`** | 1280px scrolling camera, spike hazards, death flash, Title & Victory states, 8-bit Web Audio synth | `git checkout 03-session-3` |
+| **`main`** | Master teaching repository with all session guides, presenter script, and starter template | `git checkout main` |
+
+### Terminal Quick Commands:
+```bash
+git checkout 01-session-1  # Step back to Session 1
+git checkout 03-session-3  # Advance to Session 3 (Final Game)
+git checkout main          # Return to Main (Teaching Guides)
+```
