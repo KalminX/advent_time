@@ -58,11 +58,12 @@ Every branch is self-contained. Simply open `index.html` in your browser:
 
 Everything you need to deliver the sessions is included in the [`guides/`](guides/) directory:
 
+- 🧠 **[Pedagogical Pacing Cheat Sheet](guides/pedagogical_pacing_cheat_sheet.md)**: Cognitive load limits (3 concepts max), line count budgets (35–42 lines), the 8-minute heartbeat rhythm, and common beginner pitfalls.
 - 🎙️ **[Master Presenter Script](guides/master_presenter_script.md)**: A complete, word-for-word spoken script covering game programming concepts for beginners, session orientation, and milestone-by-milestone commentary up to game completion.
 - 📘 **[Part 1 Guide](guides/part_1_guide.md)**: The Magic Canvas & Moving Our Hero (Milestones 1.1–1.4).
 - 📙 **[Part 2 Guide](guides/part_2_guide.md)**: Defying Gravity & Jumping on Platforms (Milestones 2.1–2.4).
 - 📕 **[Part 3 Guide](guides/part_3_guide.md)**: Hazards, Polish & Shipping with Gemini (Milestones 3.1–3.4).
-- 🧭 **[Curriculum Overview](guides/README.md)**: Master timetable and beginner pedagogical principles.
+- 🧭 **[Curriculum Overview](guides/README.md)**: Master timetable, concepts, and code metrics.
 
 ---
 
