@@ -1,19 +1,25 @@
 /**
- * CONFIGURATION & CONSTANTS
- * Welcome to game dev! This file holds our canvas setup and global settings.
+ * CONFIGURATION & CONSTANTS - SESSION 2
+ * Canvas settings, colors, and physics parameters.
  */
 
-// 1. Grab our canvas element from the HTML
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// 2. Set our internal virtual resolution (Crisp retro arcade size)
 const SCREEN_WIDTH = 320;
 const SCREEN_HEIGHT = 180;
+const LEVEL_WIDTH = 1280;
 
-// 3. Strict retro two-tone palette
-const COLOR_BG = '#000000'; // Pure black
-const COLOR_FG = '#39FF14'; // Electric neon green
+const COLOR_BG = '#000000';
+const COLOR_FG = '#39FF14';
 
-// 4. Ensure nearest-neighbor pixel rendering (no blurry pixels)
 ctx.imageSmoothingEnabled = false;
+
+// Physics constants
+const GRAVITY = 0.22;
+const JUMP_VELOCITY = -4.8;
+const MOVE_SPEED = 1.7;
+const MAX_FALL_SPEED = 6.0;
+
+// Camera offset (static in Session 2, active in Session 3)
+let cameraX = 0;

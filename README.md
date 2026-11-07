@@ -1,12 +1,16 @@
-# 🎮 Neon Mono Platformer — Branch `01-session-1`
+# 🎮 Neon Mono Platformer — Branch `02-session-2`
 
-This branch represents the complete, working code at the end of **Session 1: The Magic Canvas & Moving Our Hero**.
+This branch represents the complete, working code at the end of **Session 2: Defying Gravity & Jumping on Platforms**.
 
 ## What is in this branch:
-- **Canvas Setup & 60 FPS Loop**: Foundation from `00-starter`.
-- **Keyboard Input Handling (`js/input.js`)**: Tracks `A` / `D` and arrow keys with clean state mapping.
-- **Gemini ASCII Pixel Sprite (`js/sprites.js`)**: 10x13 cyberpunk humanoid matrix rendered pixel-by-pixel.
-- **Player Movement**: Smooth left/right walking clamped to screen boundaries.
+- **Euler Gravity & Jump Arc**: Realistic physics acceleration with terminal velocity clamping.
+- **AABB Platform Collision Detection (`js/level.js`)**: Solid ground collision, horizontal wall blocks, and platform landing.
+- **Gemini Obstacle Course**: 15+ platform stepping stones across a 4-screen level progression.
+- **Game Feel Juice**:
+  - **Coyote Time (6 frames)**: Jump grace period after running off ledges.
+  - **Jump Buffering (6 frames)**: Pre-registers jump input before touchdown.
+  - **Variable Jump Height**: Releasing spacebar cuts upward velocity for precise jump control.
+- **Walk Cycle & Jump Animation**: Multi-frame animated sprite states with horizontal direction flipping.
 
 ## How to run:
-Open `index.html` in your browser and use `A`/`D` or the Arrow keys to move!
+Open `index.html` in your browser. Use `A`/`D` to run, `Space` to jump, and try hopping between platforms!
