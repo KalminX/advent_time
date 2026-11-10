@@ -192,6 +192,64 @@ const SPRITE_PORTAL = [
   "####################"
 ];
 
+// Collectible Data Chip (6w x 6h) - 2-frame spin animation
+const SPRITE_CHIP_1 = [
+  "  ##  ",
+  " #### ",
+  "######",
+  "######",
+  " #### ",
+  "  ##  "
+];
+
+const SPRITE_CHIP_2 = [
+  "  ##  ",
+  "  ##  ",
+  " #### ",
+  " #### ",
+  "  ##  ",
+  "  ##  "
+];
+
+// Checkpoint Beacon (8w x 16h) - Inactive and Active states
+const SPRITE_CHECKPOINT_OFF = [
+  "  ####  ",
+  "  #  #  ",
+  "  ####  ",
+  "   ##   ",
+  "   ##   ",
+  "   ##   ",
+  "   ##   ",
+  "  ####  ",
+  "  ####  ",
+  "   ##   ",
+  "   ##   ",
+  "   ##   ",
+  "   ##   ",
+  " ###### ",
+  "########",
+  "########"
+];
+
+const SPRITE_CHECKPOINT_ON = [
+  " ###### ",
+  " ###### ",
+  " ###### ",
+  "   ##   ",
+  "  ####  ",
+  " ###### ",
+  "  ####  ",
+  "  ####  ",
+  "  ####  ",
+  "  ####  ",
+  " ###### ",
+  "  ####  ",
+  "   ##   ",
+  " ###### ",
+  "########",
+  "########"
+];
+
 /**
  * Draws a sprite matrix onto the canvas in pure #39FF14 pixels.
  * @param {string[]} matrix Array of strings representing pixel rows

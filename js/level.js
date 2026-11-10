@@ -58,6 +58,79 @@ const exitDoor = {
   h: 28
 };
 
+// Checkpoint Beacons: {x, y, w, h, active}
+const checkpoints = [
+  { x: 632, y: 124, w: 8, h: 16, active: false }
+];
+
+// Collectibles: Data Chips {x, y, w, h, collected}
+const chips = [
+  { x: 193, y: 84, w: 6, h: 6, collected: false },
+  { x: 476, y: 86, w: 6, h: 6, collected: false },
+  { x: 540, y: 96, w: 6, h: 6, collected: false },
+  { x: 725, y: 48, w: 6, h: 6, collected: false },
+  { x: 759, y: 92, w: 6, h: 6, collected: false },
+  { x: 1024, y: 98, w: 6, h: 6, collected: false },
+  { x: 1090, y: 114, w: 6, h: 6, collected: false }
+];
+let chipsCollected = 0;
+
+// Run metrics and states
+let runTimer = 0;
+let runDeaths = 0;
+let isPaused = false;
+let isNewBestRecord = false;
+
+// Subtle Parallax Starfield (Fixed positions, 1-bit pixels)
+const stars = [];
+for (let i = 0; i < 36; i++) {
+  stars.push({
+    x: (i * 37 + 19) % LEVEL_WIDTH,
+    y: (i * 23 + 11) % 150,
+    size: (i % 6 === 0) ? 2 : 1
+  });
+}
+
+// Minimal Particle System
+const particles = [];
+
+function spawnParticles(x, y, count = 5, speed = 1.5) {
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const mag = (Math.random() * 0.7 + 0.3) * speed;
+    particles.push({
+      x,
+      y,
+      vx: Math.cos(angle) * mag,
+      vy: Math.sin(angle) * mag,
+      life: 10 + Math.floor(Math.random() * 8)
+    });
+  }
+}
+
+function updateParticles() {
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.life--;
+    if (p.life <= 0) {
+      particles.splice(i, 1);
+    }
+  }
+}
+
+function renderParticles() {
+  ctx.fillStyle = COLOR_FG;
+  for (let p of particles) {
+    const px = Math.floor(p.x - cameraX);
+    const py = Math.floor(p.y);
+    if (px >= 0 && px < SCREEN_WIDTH && py >= 0 && py < SCREEN_HEIGHT) {
+      ctx.fillRect(px, py, 1, 1);
+    }
+  }
+}
+
 // Player state
 const player = {
   x: 24,
@@ -67,6 +140,7 @@ const player = {
   vx: 0,
   vy: 0,
   isGrounded: true,
+  wasGrounded: true,
   facingLeft: false,
   walkTimer: 0,
   spawnX: 24,
@@ -118,11 +192,16 @@ function rectsOverlap(r1, r2) {
  * Resets player position back to starting point after hazard contact.
  */
 function killPlayer() {
+  if (gameState === STATE_PLAYING) {
+    runDeaths++;
+  }
+  spawnParticles(player.x + 5, player.y + 6, 16, 2.4);
   player.x = player.spawnX;
   player.y = player.spawnY;
   player.vx = 0;
   player.vy = 0;
   player.isGrounded = true;
+  player.wasGrounded = true;
   coyoteTimer = 0;
   jumpBufferTimer = 0;
   deathFlashTimer = 6; // Brief 1-bit screen glitch
@@ -135,7 +214,17 @@ function killPlayer() {
  * Full game restart.
  */
 function resetGame() {
+  player.spawnX = 24;
+  player.spawnY = 141;
   killPlayer();
+  runDeaths = 0;
+  runTimer = 0;
+  chipsCollected = 0;
+  isPaused = false;
+  isNewBestRecord = false;
+  chips.forEach(c => c.collected = false);
+  checkpoints.forEach(cp => cp.active = false);
+  particles.length = 0;
   gameState = STATE_PLAYING;
   // Reset creature positions
   creatures[0].x = 420;

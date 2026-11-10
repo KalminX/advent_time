@@ -4,7 +4,26 @@ An authentic, two-tone retro arcade platformer built from scratch in pure vanill
 
 Zero external dependencies. Zero build tools. Zero installation required.
 
+🌐 **Play Live in Your Browser**: **[https://kalminx.github.io/advent_time/](https://kalminx.github.io/advent_time/)**
+
 ---
+
+## 🕹️ Controls & Gameplay
+
+| Action | Key / Input |
+|---|---|
+| **Move Left / Right** | `A` / `D` or `ArrowLeft` / `ArrowRight` |
+| **Jump** | `Space` (Hold for higher jump, tap for low hop) |
+| **Pause Game** | `P` or `Escape` |
+| **Fullscreen Toggle** | `F` |
+| **Restart Run** | `R` |
+
+### ✨ Features
+- **Strict 2-Tone Visuals**: Pure Black (`#000000`) & Neon Green (`#39FF14`) with nearest-neighbor crisp pixel scaling and subtle parallax starfield.
+- **7 Collectible Data Chips**: Floating spinning chips scattered along optional high-challenge routes.
+- **Mid-Level Checkpoint**: Interactive beacon pylon to save your progress halfway through the course.
+- **Speedrun Timer & Stats**: Tracks run time and deaths, saving your personal best clear time directly to `localStorage`.
+- **Zero-Dependency Web Audio Synth**: 8-bit square and sawtooth waves for jumps, landing, collecting chips, checkpoints, deaths, and victory fanfare.
 
 ## 🔄 How to Switch Between Branches & Acts
 

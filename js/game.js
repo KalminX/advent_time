@@ -45,6 +45,32 @@ function playSfx(type) {
       gain.gain.linearRampToValueAtTime(0.001, now + 0.3);
       osc.start(now);
       osc.stop(now + 0.3);
+    } else if (type === 'chip') {
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(987.77, now); // B5
+      osc.frequency.setValueAtTime(1318.51, now + 0.05); // E6
+      gain.gain.setValueAtTime(0.09, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 0.12);
+      osc.start(now);
+      osc.stop(now + 0.12);
+    } else if (type === 'checkpoint') {
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(523.25, now); // C5
+      osc.frequency.setValueAtTime(659.25, now + 0.05); // E5
+      osc.frequency.setValueAtTime(783.99, now + 0.10); // G5
+      osc.frequency.setValueAtTime(1046.50, now + 0.15); // C6
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 0.22);
+      osc.start(now);
+      osc.stop(now + 0.22);
+    } else if (type === 'land') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(80, now);
+      osc.frequency.linearRampToValueAtTime(35, now + 0.04);
+      gain.gain.setValueAtTime(0.05, now);
+      gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
+      osc.start(now);
+      osc.stop(now + 0.04);
     }
   } catch (e) {
     // AudioContext blocked by browser policy until gesture
@@ -93,6 +119,19 @@ function update() {
     return;
   }
 
+  // Pause handling
+  if (isPaused) {
+    return;
+  }
+
+  // Increment run speedrun timer
+  if (gameState === STATE_PLAYING) {
+    runTimer += 1 / 60;
+  }
+
+  // Update transient particles
+  updateParticles();
+
   // Decrement jump buffer
   if (jumpBufferTimer > 0) {
     jumpBufferTimer--;
@@ -140,6 +179,7 @@ function update() {
     coyoteTimer = 0;
     jumpBufferTimer = 0;
     playSfx('jump');
+    spawnParticles(player.x + 5, player.y + 13, 3, 0.9);
   }
 
   // Apply gravity
@@ -166,6 +206,13 @@ function update() {
       }
     }
   }
+
+  // Detect landing impact for juice & SFX
+  if (!player.wasGrounded && player.isGrounded) {
+    playSfx('land');
+    spawnParticles(player.x + 5, player.y + 13, 4, 1.0);
+  }
+  player.wasGrounded = player.isGrounded;
 
   // Update walk animation timer
   if (player.vx !== 0 && player.isGrounded) {
@@ -225,10 +272,39 @@ function update() {
     }
   }
 
+  // --- CHECKPOINT BEACON TRIGGERS ---
+  for (let cp of checkpoints) {
+    if (!cp.active && rectsOverlap(player, cp)) {
+      cp.active = true;
+      player.spawnX = cp.x;
+      player.spawnY = cp.y + 3;
+      playSfx('checkpoint');
+      spawnParticles(cp.x + 4, cp.y + 8, 12, 1.8);
+    }
+  }
+
+  // --- COLLECTIBLE DATA CHIPS ---
+  for (let c of chips) {
+    if (!c.collected && rectsOverlap(player, c)) {
+      c.collected = true;
+      chipsCollected++;
+      playSfx('chip');
+      spawnParticles(c.x + 3, c.y + 3, 8, 1.6);
+    }
+  }
+
   // --- EXIT GOAL REACHED ---
   if (rectsOverlap(player, exitDoor)) {
     if (gameState !== STATE_WON) {
       playSfx('win');
+      // Save best speedrun time to localStorage
+      const best = localStorage.getItem('neon_best_time');
+      if (!best || runTimer < parseFloat(best)) {
+        localStorage.setItem('neon_best_time', runTimer.toFixed(1));
+        isNewBestRecord = true;
+      } else {
+        isNewBestRecord = false;
+      }
     }
     gameState = STATE_WON;
   }
@@ -261,8 +337,14 @@ function render() {
     return;
   }
 
-  // --- 1. RENDER PLATFORMS & TERRAIN ---
+  // --- 0. PARALLAX STARFIELD (Subtle retro depth) ---
   ctx.fillStyle = COLOR_FG;
+  for (let s of stars) {
+    const sx = (Math.floor(s.x - cameraX * 0.25) % SCREEN_WIDTH + SCREEN_WIDTH) % SCREEN_WIDTH;
+    ctx.fillRect(sx, s.y, s.size, s.size);
+  }
+
+  // --- 1. RENDER PLATFORMS & TERRAIN ---
   for (let p of platforms) {
     const rx = Math.floor(p.x - cameraX);
     const ry = Math.floor(p.y);
@@ -299,7 +381,22 @@ function render() {
     }
   }
 
-  // --- 3. RENDER EXIT GATEWAY ---
+  // --- 3. RENDER CHECKPOINT BEACONS ---
+  for (let cp of checkpoints) {
+    const sprite = cp.active ? SPRITE_CHECKPOINT_ON : SPRITE_CHECKPOINT_OFF;
+    drawSprite(sprite, cp.x, cp.y);
+  }
+
+  // --- 4. RENDER COLLECTIBLE DATA CHIPS ---
+  for (let c of chips) {
+    if (!c.collected) {
+      const chipFrame = Math.floor(Date.now() / 250) % 2;
+      const sprite = chipFrame === 0 ? SPRITE_CHIP_1 : SPRITE_CHIP_2;
+      drawSprite(sprite, c.x, c.y);
+    }
+  }
+
+  // --- 5. RENDER EXIT GATEWAY ---
   drawSprite(SPRITE_PORTAL, exitDoor.x, exitDoor.y);
   // Pulsing central beacon core
   const pulse = Math.floor(Date.now() / 200) % 2;
@@ -309,7 +406,7 @@ function render() {
     ctx.fillRect(ex + 8, exitDoor.y + 10, 4, 8);
   }
 
-  // --- 4. RENDER CREATURES ---
+  // --- 6. RENDER CREATURES ---
   for (let c of creatures) {
     if (c.type === 'strider') {
       const frame = Math.floor(c.animTimer) % 2;
@@ -322,7 +419,10 @@ function render() {
     }
   }
 
-  // --- 5. RENDER PLAYER ---
+  // --- 7. RENDER PARTICLES ---
+  renderParticles();
+
+  // --- 8. RENDER PLAYER ---
   let playerSprite = SPRITE_PLAYER_IDLE;
   if (!player.isGrounded) {
     playerSprite = SPRITE_PLAYER_JUMP;
@@ -332,49 +432,82 @@ function render() {
   }
   drawSprite(playerSprite, player.x, player.y, player.facingLeft);
 
-  // --- 6. MINIMAL IN-GAME HUD ---
+  // --- 9. MINIMAL IN-GAME HUD ---
   if (gameState === STATE_PLAYING) {
-    // Minimal corner progress indicator
-    const progress = Math.min(100, Math.floor((player.x / (exitDoor.x)) * 100));
-    drawPixelText(`DIST:${progress}%`, 8, 8, 1);
-    drawPixelText("R:RESET", SCREEN_WIDTH - 38, 8, 1);
+    // Chips counter
+    drawPixelText(`CHIPS:${chipsCollected}/${chips.length}`, 8, 8, 1);
+    // Speedrun timer
+    const sec = Math.floor(runTimer);
+    const tenths = Math.floor((runTimer % 1) * 10);
+    drawPixelText(`TIME:${sec}.${tenths}S`, 116, 8, 1);
+    // Controls indicator
+    drawPixelText("P:PAUSE", SCREEN_WIDTH - 76, 8, 1);
+    drawPixelText("R:RESET", SCREEN_WIDTH - 36, 8, 1);
   }
 
-  // --- 7. OVERLAY SCREENS ---
+  // --- 10. OVERLAY SCREENS ---
   if (gameState === STATE_TITLE) {
     // Black background card
     ctx.fillStyle = COLOR_BG;
-    ctx.fillRect(28, 16, 264, 148);
+    ctx.fillRect(28, 12, 264, 156);
 
     // Green border box
-    drawPixelBox(28, 16, 264, 148);
+    drawPixelBox(28, 12, 264, 156);
 
-    // Title & prompt
-    drawPixelTextCentered("NEON MONO PLATFORMER", 38, 1);
-    drawPixelTextCentered("--------------------", 50, 1);
-    drawPixelTextCentered("A / D   : MOVE", 68, 1);
-    drawPixelTextCentered("SPACE   : JUMP", 80, 1);
-    drawPixelTextCentered("R       : RESTART", 92, 1);
+    // Title & instructions
+    drawPixelTextCentered("NEON MONO PLATFORMER", 26, 1);
+    drawPixelTextCentered("--------------------", 38, 1);
+    drawPixelTextCentered("A / D   : MOVE", 54, 1);
+    drawPixelTextCentered("SPACE   : JUMP", 68, 1);
+    drawPixelTextCentered("P / ESC : PAUSE", 82, 1);
+    drawPixelTextCentered("F       : FULLSCREEN", 96, 1);
+    drawPixelTextCentered("R       : RESTART", 110, 1);
 
     // Prompt with blinking indicator arrows
     const blink = Math.floor(Date.now() / 400) % 2 === 0;
     const arrowL = blink ? ">> " : "   ";
     const arrowR = blink ? " <<" : "   ";
-    drawPixelTextCentered(`${arrowL}PRESS SPACE TO START${arrowR}`, 124, 1);
+    drawPixelTextCentered(`${arrowL}PRESS SPACE TO START${arrowR}`, 136, 1);
   } else if (gameState === STATE_WON) {
     // Victory banner box
     ctx.fillStyle = COLOR_BG;
-    ctx.fillRect(28, 28, 264, 124);
+    ctx.fillRect(24, 16, 272, 148);
 
-    drawPixelBox(28, 28, 264, 124);
+    drawPixelBox(24, 16, 272, 148);
 
-    drawPixelTextCentered("MISSION COMPLETE!", 54, 1);
-    drawPixelTextCentered("YOU REACHED THE EXIT GATE", 72, 1);
+    drawPixelTextCentered("MISSION COMPLETE!", 26, 1);
+    drawPixelTextCentered("==================", 36, 1);
+
+    const sec = Math.floor(runTimer);
+    const tenths = Math.floor((runTimer % 1) * 10);
+    const bestRecord = localStorage.getItem('neon_best_time') || `${sec}.${tenths}`;
+    const bestNotice = isNewBestRecord ? " [NEW RECORD!]" : "";
+
+    drawPixelTextCentered(`TIME: ${sec}.${tenths}S${bestNotice}`, 50, 1);
+    drawPixelTextCentered(`DATA CHIPS: ${chipsCollected}/${chips.length}`, 64, 1);
+    drawPixelTextCentered(`DEATHS: ${runDeaths}`, 78, 1);
+    drawPixelTextCentered(`BEST TIME: ${bestRecord}S`, 92, 1);
+
+    if (chipsCollected === chips.length) {
+      drawPixelTextCentered("* 100% DATA RETRIEVED *", 108, 1);
+    }
 
     const blink = Math.floor(Date.now() / 400) % 2 === 0;
     const arrowL = blink ? ">> " : "   ";
     const arrowR = blink ? " <<" : "   ";
-    drawPixelTextCentered(`${arrowL}PRESS R TO PLAY AGAIN${arrowR}`, 108, 1);
+    drawPixelTextCentered(`${arrowL}PRESS R TO PLAY AGAIN${arrowR}`, 130, 1);
+  }
+
+  // --- 11. PAUSE OVERLAY ---
+  if (isPaused && gameState === STATE_PLAYING) {
+    ctx.fillStyle = COLOR_BG;
+    ctx.fillRect(48, 44, 224, 92);
+    drawPixelBox(48, 44, 224, 92);
+
+    drawPixelTextCentered("GAME PAUSED", 56, 1);
+    drawPixelTextCentered("----------------", 68, 1);
+    drawPixelTextCentered("PRESS P OR ESC TO RESUME", 84, 1);
+    drawPixelTextCentered("PRESS F FOR FULLSCREEN", 100, 1);
   }
 }
 

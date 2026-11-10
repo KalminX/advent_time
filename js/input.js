@@ -29,6 +29,18 @@ window.addEventListener('keydown', (e) => {
   if (e.code === 'KeyR') {
     keys.restart = true;
   }
+  if (e.code === 'KeyP' || e.code === 'Escape') {
+    if (typeof gameState !== 'undefined' && gameState === STATE_PLAYING) {
+      isPaused = !isPaused;
+    }
+  }
+  if (e.code === 'KeyF') {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen().catch(() => {});
+    }
+  }
 });
 
 window.addEventListener('keyup', (e) => {
