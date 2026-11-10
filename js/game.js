@@ -4,7 +4,7 @@
  */
 
 // Web Audio API 8-Bit Retro Sound Synthesizer (Zero Dependencies)
-let audioCtx = null;
+// audioCtx declared in config.js
 function playSfx(type) {
   try {
     if (!audioCtx) {

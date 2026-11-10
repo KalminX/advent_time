@@ -10,16 +10,20 @@ Zero external dependencies. Zero build tools. Zero installation required.
 
 ## 🕹️ Controls & Gameplay
 
-| Action | Key / Input |
-|---|---|
-| **Move Left / Right** | `A` / `D` or `ArrowLeft` / `ArrowRight` |
-| **Jump** | `Space` (Hold for higher jump, tap for low hop) |
-| **Pause Game** | `P` or `Escape` |
-| **Fullscreen Toggle** | `F` |
-| **Restart Run** | `R` |
+| Action | Keyboard Input | Touch / Mobile Controller |
+|---|---|---|
+| **Move Left / Right** | `A` / `D` or `ArrowLeft` / `ArrowRight` | On-screen Left (`◄`) / Right (`►`) D-Pad |
+| **Jump** | `Space` (Hold for high, tap for low) | On-screen `JUMP` Button (Hold / tap) |
+| **Pause Game** | `P` or `Escape` | `PAUSE` Button |
+| **Fullscreen Toggle** | `F` | `FS` Button |
+| **Restart Run** | `R` | `RESET` Button |
 
 ### ✨ Features
 - **Strict 2-Tone Visuals**: Pure Black (`#000000`) & Neon Green (`#39FF14`) with nearest-neighbor crisp pixel scaling and subtle parallax starfield.
+- **Full Mobile & Tablet Responsiveness**: Dynamic viewport units (`100dvh`/`100dvw`), notch safety margins (`env(safe-area-inset-*)`), and seamless multi-touch controls.
+- **Dual-Orientation Handheld Console Mode**:
+  - **Landscape & Tablets**: Centered 16:9 view with ergonomic thumb controls placed in the lateral pillarbox areas.
+  - **Portrait Phones**: Automatically adapts into a retro handheld deck (Game Boy style) with the screen up top and controller below.
 - **7 Collectible Data Chips**: Floating spinning chips scattered along optional high-challenge routes.
 - **Mid-Level Checkpoint**: Interactive beacon pylon to save your progress halfway through the course.
 - **Speedrun Timer & Stats**: Tracks run time and deaths, saving your personal best clear time directly to `localStorage`.

@@ -34,3 +34,4 @@ const STATE_WON = 2;
 let gameState = STATE_TITLE;
 let cameraX = 0;
 let deathFlashTimer = 0;
+let audioCtx = null;

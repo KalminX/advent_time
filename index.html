@@ -2,13 +2,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>NEON MONO PLATFORMER</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div id="game-container">
-    <canvas id="gameCanvas" width="320" height="180"></canvas>
+    <div id="canvas-wrapper">
+      <canvas id="gameCanvas" width="320" height="180"></canvas>
+    </div>
+
+    <!-- Virtual Touch Controller Deck -->
+    <div id="touch-controls" class="touch-deck" aria-hidden="true">
+      <!-- Top utility bar -->
+      <div class="touch-bar-top">
+        <button id="btn-pause" class="touch-btn touch-btn-util" type="button" aria-label="Pause Game">PAUSE</button>
+        <button id="btn-restart" class="touch-btn touch-btn-util" type="button" aria-label="Restart Run">RESET</button>
+        <button id="btn-fs" class="touch-btn touch-btn-util" type="button" aria-label="Toggle Fullscreen">FS</button>
+      </div>
+
+      <!-- Bottom controls layout -->
+      <div class="touch-bar-bottom">
+        <!-- Directional Pad (Left Thumb) -->
+        <div class="touch-dpad">
+          <button id="btn-left" class="touch-btn touch-btn-dir" type="button" aria-label="Move Left">
+            <span class="btn-icon">&#9664;</span>
+          </button>
+          <button id="btn-right" class="touch-btn touch-btn-dir" type="button" aria-label="Move Right">
+            <span class="btn-icon">&#9654;</span>
+          </button>
+        </div>
+
+        <!-- Action Pad (Right Thumb) -->
+        <div class="touch-action">
+          <button id="btn-jump" class="touch-btn touch-btn-jump" type="button" aria-label="Jump">
+            <span class="btn-label">JUMP</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Functional Game Modules -->
